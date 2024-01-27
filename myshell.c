@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
         input[strcspn(input, "\n")] = 0;
 
         // Process the input (you can add more logic here)
-        printf("You entered: %s\n", input);
+        command_pipeline(input);
 
         // Example: exit the loop if the user types "exit"
         if (strcmp(input, "exit") == 0) {

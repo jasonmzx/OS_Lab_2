@@ -10,27 +10,42 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #define MAX_TOKENS 100
 #define MAX_TOKEN_LENGTH 50
 
 typedef enum {
-    KEYWORD,
-    LITERAL,
-    OPERATOR
+    KEYWORD, //int 0
+    LITERAL, //int 1
+    OPERATOR //int 2
 } TokenType;
 
-typedef void (*CommandFunc)(const char*);
+typedef struct Token Token; // Forward Declaration is need for Circular Dependency with CommandFunc void fn. ptr
 
-typedef struct {
+typedef void (*CommandFunc)(const Token* tokens, int token_count);
+
+struct Token {
     char* token;
     TokenType type;
-    CommandFunc func; // Function pointer for command execution
-} Token;
+    CommandFunc func; //* Function Pointer for this Token's Keyword or Operator
+};
 
 // Function Declarations
-void change_directory(const char* path);
-void dummy_operator_function(const char* arg); // Dummy function for operator
+void change_directory(const Token* tokens, int token_count);
+void clear_screen(const Token* tokens, int token_count);
+void list_dir(const Token* tokens, int token_count);
+void environ_func(const Token* tokens, int token_count);
+void echo(const Token* tokens, int token_count);
+void help(const Token* tokens, int token_count);
+void pause_shell(const Token* tokens, int token_count);
+void quit(const Token* tokens, int token_count);
+
+void dummy_operator_function(const Token* tokens, int token_count);
+
+
+// Command Parsing Pipeline
+void command_pipeline(char* input) ;
 
 char** parse_and_clean(const char* input, int* numTokens);
 TokenType determine_token_type(const char* token, CommandFunc* func);

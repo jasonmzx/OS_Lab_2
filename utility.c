@@ -5,57 +5,100 @@
 
 #include "utility.h"
 
-void change_directory(const char* path) {
-    if (chdir(path) != 0) {
-        // Use perror to output a descriptive error message
-        perror("Change directory failed");
-    } else {
-        // Correct array declaration
-        char s[100];
+//! ------------------ Internal Command Implementations -------------------------
 
-        // Get and print the current working directory
-        if (getcwd(s, sizeof(s)) != NULL) {
-            printf("Current directory: %s\n", s);
+void change_directory(const Token* tokens, int token_count) { // 1.i
+    if (token_count > 0) {
+        // Use the first argument as the directory path
+        if (chdir(tokens[0].token) != 0) {
+            perror("Change directory failed");
         } else {
-            perror("getcwd failed");
+            char s[100];
+            if (getcwd(s, sizeof(s)) == NULL) {
+                perror("myshell: Change Directory Procedure Failed !");
+            }
         }
+    } else {
+        // Handle the case where no arguments are provided
+        printf("No directory specified for cd command...\n");
     }
 }
 
-void dummy_operator_function(const char* arg) {
-    printf("Operator function called with arsgument: %s\n", arg);
+
+void clear_screen(const Token* tokens, int token_count) { //1.ii
+    printf("\033[H\033[J");
+}
+
+void list_dir(const Token* tokens, int token_count) { //1.iii
+    const char* directory = (token_count > 0) ? tokens[0].token : ".";
+
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(directory);
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            printf("%s\n", dir->d_name);
+        }
+        closedir(d);
+    } else {
+        perror("dir command failed");
+    }
+}
+
+extern char **environ; //* Requires the external environ variable declared in <unistd.h>.
+
+void environ_func(const Token* tokens, int token_count) { //1.iv
+    for (char **env = environ; *env != 0; env++) {
+        char *thisEnv = *env;
+        printf("%s\n", thisEnv);    
+    }
+}
+
+void echo(const Token* tokens, int token_count) { //1.v
+    for (int i = 0; i < token_count; i++) {
+        printf("%s ", tokens[i].token);
+    }
+    printf("\n");
+}
+
+void help(const Token* tokens, int token_count) { //1.vi
+    system("more manual.txt"); //TODO Replace 'manual.txt' with the manual file
+}
+
+void pause_shell(const Token* tokens, int token_count) { //1.vii
+    printf("Press Enter to continue...");
+    getchar();
+}
+
+void quit(const Token* tokens, int token_count) { // 1.viii
+    exit(0);
 }
 
 
-// ------------------ Parsing Features -----------------------
 
+void dummy_operator_function(const Token* tokens, int token_count) {
+}
 
+//! ------------------ Parsing Functionality --------------------------
 
-// int main() {
-//     char input[] = "cd test < inputfile > outputfile";
-//     int numTokens;
-//     char** tokens = parse_and_clean(input, &numTokens);
+void command_pipeline(char* input) {
+    int numTokens;
+    char** tokens = parse_and_clean(input, &numTokens);
 
-//     Token* tokenStructs = (Token*)malloc(numTokens * sizeof(Token));
-//     tokenize(tokens, numTokens, tokenStructs);
+    Token* tokenStructs = (Token*)malloc(numTokens * sizeof(Token));
+    tokenize(tokens, numTokens, tokenStructs);
 
-//     process_tokens(tokenStructs, numTokens);
+    process_tokens(tokenStructs, numTokens);
 
-//     // Cleanup
-//     for (int i = 0; i < numTokens; i++) {
-//         free(tokens[i]);
-//     }
-//     free(tokens);
-//     free(tokenStructs);
+    //Free Allocated Variables
+    free(tokens);
+    free(tokenStructs);
+}
 
-//     return 0;
-// }
+//* KEYWORD & OPERATOR token-definitions aswell as associated function Pointers (to be loaded into Token structs upon pipeline call)
 
-
-//* KEYWORD & OPERATOR token-definitions aswell as associated function Pointers
-
-const char* keywords[] = {"cd"};
-CommandFunc keywordFunctions[] = {change_directory};
+const char* keywords[] = {"cd", "clr", "dir", "environ", "echo", "help", "pause", "quit"};
+CommandFunc keywordFunctions[] = {change_directory, clear_screen, list_dir, environ_func, echo, help, pause_shell,quit};
 
 const char* operators[] = {"<"};
 CommandFunc operatorFunctions[] = {dummy_operator_function};
@@ -99,6 +142,7 @@ TokenType determine_token_type(const char* token, CommandFunc* func) {
     return LITERAL;
 }
 
+//TODO: comment btr
 void tokenize(char** tokens, int numTokens, Token* tokenStructs) {
     for (int i = 0; i < numTokens; i++) {
         
@@ -112,8 +156,22 @@ void tokenize(char** tokens, int numTokens, Token* tokenStructs) {
 }
 
 void process_tokens(Token* tokens, int numTokens) {
+    
+    //TODO: For debug, remove soon
     for (int i = 0; i < numTokens; i++) {
         printf("Token: %s, Type: %d\n", tokens[i].token, tokens[i].type);
         // Add further processing logic here
     }
+
+    // ------ Requirement 1. Internal Commands (Executing Associated Token Func.) ------
+    
+    if(tokens[0].type == KEYWORD && tokens[0].func != NULL){
+        //* &tokens[1] points to tokens[1] and onwards (without traditional array slicing)
+        tokens[0].func(&tokens[1], numTokens - 1);
+        return;
+    }
+
+    // ------ Requirement 2. X ------
+
+
 }
