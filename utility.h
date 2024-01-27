@@ -6,11 +6,20 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+
+// Core Generic Imports
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+//Environment & Forking Libs
+
 #include <dirent.h>
+#include <sys/wait.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #define MAX_TOKENS 100
 #define MAX_TOKEN_LENGTH 50
@@ -31,7 +40,7 @@ struct Token {
     CommandFunc func; //* Function Pointer for this Token's Keyword or Operator
 };
 
-// Function Declarations
+//* Internal Command ; Declarations
 void change_directory(const Token* tokens, int token_count);
 void clear_screen(const Token* tokens, int token_count);
 void list_dir(const Token* tokens, int token_count);
@@ -41,8 +50,14 @@ void help(const Token* tokens, int token_count);
 void pause_shell(const Token* tokens, int token_count);
 void quit(const Token* tokens, int token_count);
 
-void dummy_operator_function(const Token* tokens, int token_count);
+int execute_external_command(const Token* tokens, int token_count);
 
+//* I/O Redirection & Utility Declarations
+
+char* STDOUT_REDIR_BUFFER;
+char* OUTPUT_WRITE_MODE; // "w" for Re-write, and "a" for Append
+
+void input_redir(const Token* tokens, int token_count);
 
 // Command Parsing Pipeline
 void command_pipeline(char* input) ;
