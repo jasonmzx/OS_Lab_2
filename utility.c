@@ -5,6 +5,9 @@
 
 #include "utility.h"
 
+char* STDOUT_REDIR_BUFFER = NULL;
+char* OUTPUT_WRITE_MODE = "w";
+
 //! ------------------ Internal Command Implementations -------------------------
 
 void change_directory(const Token* tokens, int token_count) { // 1.i
@@ -299,7 +302,7 @@ void process_tokens(Token* tokens, int numTokens) {
     
     if(tokens[0].type == KEYWORD && tokens[0].func != NULL){
         //* &tokens[1] points to tokens[1] and onwards (without traditional array slicing)
-        tokens[0].func(&tokens[1], 1); // Only 1 Argument after Redirection operator
+        tokens[0].func(&tokens[1], numTokens-1); // Only 1 Argument after Redirection operator
         return;
     }
 

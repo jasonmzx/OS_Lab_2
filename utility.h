@@ -54,8 +54,8 @@ int execute_external_command(const Token* tokens, int token_count);
 
 //* I/O Redirection & Utility Declarations
 
-char* STDOUT_REDIR_BUFFER;
-char* OUTPUT_WRITE_MODE; // "w" for Re-write, and "a" for Append
+extern char* STDOUT_REDIR_BUFFER;
+extern char* OUTPUT_WRITE_MODE; // "w" for Re-write, and "a" for Append
 
 void input_redir(const Token* tokens, int token_count);
 
