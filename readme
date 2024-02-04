@@ -1,1 +1,51 @@
-Skill issue
+MY_SHELL(OS_LAB_2)                  User Commands                 
+
+NAME
+       myshell - a simple command line interpreter (shell)
+
+SYNOPSIS
+       ./myshell
+
+DESCRIPTION
+       myshell is a simple shell implementation written in C that
+       supports basic command execution and simple file handling.
+
+       To run myshell, ensure a C compiler and make utility are
+       installed. Navigate to the myshell directory and compile
+       using make, then run with ./myshell.
+
+COMMANDS
+       cd <directory>
+              Change the current directory to <directory>.
+
+       cl     Clear the terminal screen.
+
+       dir    Display the contents of the current directory.
+
+       environ
+              Display all environment variables.
+
+       echo <comment>
+              Display <comment> on the terminal.
+
+       help   Show the help manual for myshell commands.
+
+       pause  Pause operations, resume with ENTER key.
+
+       quit   Exit the shell.
+
+FILE BASED COMMAND EXECUTION
+       If an input command does not match any of the above, it is
+       treated as a program to execute. An absolute path must be
+       specified if the program is not in the current directory.
+
+INSTALLATION
+       1. Install a virtual machine and the make utility.
+          Example: sudo apt-get install make
+       2. Navigate to the myshell directory.
+       3. Run the shell with ./myshell.
+
+SEE ALSO
+       sh(1), bash(1)
+
+myshell 1.0                   February 2024                MY_SHELL(OS_LAB_2)

@@ -1,6 +1,8 @@
 //*###########################################
 // Operation Systems, Lab 1, January 26th 2024
 // Jason Manarroo | 100825106
+// Ahmed Darwish  | 100754743
+// Juliano Falotico | 100658311 
 //*###########################################
 
 #include "utility.h"
@@ -65,7 +67,7 @@ void echo(const Token* tokens, int token_count) { //1.v
 }
 
 void help(const Token* tokens, int token_count) { //1.vi
-    system("more manual.txt"); //TODO Replace 'manual.txt' with the manual file
+    system("more readme"); //TODO Replace 'manual.txt' with the manual file
 }
 
 void pause_shell(const Token* tokens, int token_count) { //1.vii
