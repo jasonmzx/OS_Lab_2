@@ -1,6 +1,8 @@
 #############################################
 # Operation Systems, Lab 1, January 26th 2024
 # Jason Manarroo | 100825106
+# Ahmed Darwish  | 100754743
+# Juliano Falotico | 100658311 
 #############################################
 
 # Default target
