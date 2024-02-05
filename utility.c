@@ -116,8 +116,12 @@ int execute_external_command(const Token* tokens, int token_count) {
 
         args[token_count] = NULL; //*Termination token (last one) for execvp
 
-        execvp(args[0], args); // Replace child process with the newly exec. program
-        perror("Execution of program failed"); //* If execvp fails, it returns, yielding this line
+        // Replace child process with the newly exec. program
+        if(execvp(args[0], args) == -1){
+            perror("Execution of program failed"); //* If execvp fails, it returns, yielding this line
+            kill(getpid(), SIGKILL); //force kill child process if any failure in execvp
+        } 
+        
         //exit(1);
 
     } else { //! *** Parent Process ***
@@ -334,6 +338,10 @@ void process_tokens(Token* tokens, int numTokens) {
 
         // Execute the command as an external program, passing only tokens before the first operator
         int stat = execute_external_command(tokens, operatorIndex);
+        if(stat == 1){
+            printf("JUL DEBUG line was hit after execute_external\n");
+            return;
+        }
 
         // (STDOUT) Analyzes Tokenized inputs for Redirection Instructions, and performs accordingly
         perform_output_redirection(tokens,numTokens);

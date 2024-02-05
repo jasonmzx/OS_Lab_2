@@ -22,6 +22,7 @@
 #include <sys/wait.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <signal.h>
 
 #define MAX_TOKENS 100
 #define MAX_TOKEN_LENGTH 50

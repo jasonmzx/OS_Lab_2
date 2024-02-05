@@ -75,13 +75,13 @@ int main(int argc, char *argv[]) {
         // Remove newline character from input
         input[strcspn(input, "\n")] = 0;
 
-        // Process the input (you can add more logic here)
-        command_pipeline(input);
-
         // Example: exit the loop if the user types "exit"
         if (strcmp(input, "exit") == 0) {
             break;
         }
+
+        // Process the input (you can add more logic here)
+        command_pipeline(input);
 
         // Add more command handling logic here
     }
