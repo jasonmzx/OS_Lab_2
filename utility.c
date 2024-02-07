@@ -7,6 +7,8 @@
 
 #include "utility.h"
 
+int TURN_ON_TOKENIZER_DEBUG = 0; //You can either set this to `1` or run the debug command in myshell
+
 char* STDOUT_REDIR_BUFFER = NULL;
 char* OUTPUT_WRITE_MODE = "w";
 
@@ -33,6 +35,10 @@ void change_directory(const Token* tokens, int token_count) { // 1.i
 void clear_screen(const Token* tokens, int token_count) { //1.ii
     printf("\033[H\033[J");
 }
+
+void toggle_debug(const Token* tokens, int token_count) { //* Dev Command (extra, not part of requirements)
+    TURN_ON_TOKENIZER_DEBUG = TURN_ON_TOKENIZER_DEBUG == 1 ? 0 : 1;
+}   
 
 void list_dir(const Token* tokens, int token_count) { //1.iii
     const char* directory = (token_count > 0) ? tokens[0].token : ".";
@@ -127,8 +133,6 @@ int execute_external_command(const Token* tokens, int token_count) {
     } else { //! *** Parent Process ***
         close(pipefd[1]); // Close WR
 
-        printf("\n Recieved Buffer \n");
-
         // Read from the pipe in temp buffer
         char tmp_buffer[4096];
 
@@ -217,8 +221,8 @@ void command_pipeline(char* input) {
 
 //* KEYWORD & OPERATOR token-definitions aswell as associated function Pointers (to be loaded into Token structs upon pipeline call)
 
-const char* keywords[] = {"cd", "clr", "dir", "environ", "echo", "help", "pause", "quit"};
-CommandFunc keywordFunctions[] = {change_directory, clear_screen, list_dir, environ_func, echo, help, pause_shell,quit};
+const char* keywords[] = {"cd", "clr", "dir", "environ", "echo", "help", "pause", "quit", "debug"};
+CommandFunc keywordFunctions[] = {change_directory, clear_screen, list_dir, environ_func, echo, help, pause_shell,quit, toggle_debug};
 
 const char* operators[] = {"<", ">", ">>"};
 CommandFunc operatorFunctions[] = {input_redir, output_redir, output_redir};
@@ -297,13 +301,18 @@ void perform_output_redirection(Token* tokens, int numTokens) {
 }
 
 
+
 void process_tokens(Token* tokens, int numTokens) {
     
-    //TODO: For debug, remove soon
-    for (int i = 0; i < numTokens; i++) {
-        printf("Token: %s, Type: %d\n", tokens[i].token, tokens[i].type);
+    if(TURN_ON_TOKENIZER_DEBUG == 1) {
+        for (int i = 0; i < numTokens; i++) {
+            printf(">> Token String: %s, Type: %d\n", tokens[i].token, tokens[i].type);
+        }
+            for (int j = 25; j >0; j--){
+            printf("=");
+            }
+            printf("\n");
     }
-
     // ------ Requirement 1. Internal Commands (Executing Associated Token Func.) ------
     
     if(tokens[0].type == KEYWORD && tokens[0].func != NULL){

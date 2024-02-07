@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     char cwd[MAX_PATH_LENGTH]; //Current Path myshell is in (usually starts at shell environ. loc)
     char full_prompt[MAX_INPUT_LENGTH + MAX_PATH_LENGTH];
 
-    printf("Welcome to myshell, By: Jason Manarroo 100825106 \n\n");
+    printf("Welcome to myshell, By: Jason, Juliano & Ahmed \n\n");
 
     // Main loop
     while (1) {
